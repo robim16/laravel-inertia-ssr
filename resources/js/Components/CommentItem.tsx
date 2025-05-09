@@ -1,9 +1,12 @@
+import { can } from "@/helpers";
 import { Comment } from "@/types";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 
 
 export default function CommentItem({ comment }: { comment: Comment }) {
     const form = useForm();
+
+    const user = usePage().props.auth.user;
 
     const deleteComment = () => {
         form.delete(route('comment.destroy', comment.id), {
@@ -22,7 +25,7 @@ export default function CommentItem({ comment }: { comment: Comment }) {
                 </svg>
 
             </div>
-            <div>
+            <div className="flex-1">
                 <h3 className="font-bold mt-1">
                     {comment.user.name}
                     <span className="text-gray-500 text-xs ml-4">{comment.created_at}</span>
@@ -30,7 +33,7 @@ export default function CommentItem({ comment }: { comment: Comment }) {
                 <div className="italic mt-1">{comment.comment}</div>
             </div>
 
-            <div className="flex items-center py-2 px-6">
+            {can(user, 'manage_comments') && comment.user.id == user.id && <div className="flex items-center py-2 px-6">
                 <button onClick={deleteComment}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                         stroke="currentColor" className="size-4">
@@ -39,7 +42,7 @@ export default function CommentItem({ comment }: { comment: Comment }) {
                     </svg>
 
                 </button>
-            </div>
+            </div>}
         </div>
     )
 }
