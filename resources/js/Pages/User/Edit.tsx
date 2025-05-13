@@ -1,46 +1,60 @@
-import FeatureItem from '@/Components/FeatureItem';
+
+import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
-import TextAreaInput from '@/Components/TextAreaInput';
+import Radio from '@/Components/Radio';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Feature, PaginatedData } from '@/types';
+import { User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function Edit({ feature }: { feature: Feature }) {
-    const {data, setData, processing, errors, put } = useForm({
-        name: feature.name,
-        description: feature.description,
+export default function Edit({ roles, user, roleLabels }: {
+    roles: any, user: User,
+    roleLabels: Record<string, string>
+}) {
+    const { data, setData, processing, errors, put } = useForm({
+        name: user.name,
+        email: user.email,
+        roles: user.roles,
     })
 
-    const updateFeature: FormEventHandler = (ev) => {
+    const updateUser: FormEventHandler = (ev) => {
         ev.preventDefault()
 
-        put(route('feature.update', feature.id), {
+        put(route('user.update', user.id), {
             preserveScroll: true
         })
     }
+
+    const onRoleChange = (ev: any) => {
+        console.log(ev.target.value, ev.target.checked)
+        if (ev.target.checked) {
+            setData('roles', [ev.target.value])
+        }
+    }
+
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Edit Feature <b>{feature.name}</b>
+                    Edit user <b>{user.name}</b>
                 </h2>
             }
         >
-            <Head title={"Edit Feature" + feature.name} />
+            <Head title={"Edit user" + user.name} />
 
             <div className="mb-4 overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                 <div className="p-6 text-gray-900 dark:text-gray-100 flex gap-8">
-                    <form onSubmit={updateFeature} className='w-full'>
+                    <form onSubmit={updateUser} className='w-full'>
                         <div className='mb-8'>
                             <InputLabel htmlFor="name" value="Name" />
 
                             <TextInput
                                 id="name"
+                                disabled
                                 className="mt-1 block w-full"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
@@ -52,18 +66,37 @@ export default function Edit({ feature }: { feature: Feature }) {
                             <InputError className="mt-2" message={errors.name} />
                         </div>
                         <div className='mb-8'>
-                            <InputLabel htmlFor="description" value="Description" />
+                            <InputLabel htmlFor="email" value="Email" />
 
-                            <TextAreaInput
-                                id="description"
-                                rows={5}
+                            <TextInput
+                                id="email"
+                                disabled
                                 className="mt-1 block w-full"
                                 value={data.name}
-                                onChange={(e) => setData('description', e.target.value)}
+                                onChange={(e) => setData('email', e.target.value)}
                                 required
+                                isFocused
+                                autoComplete="email"
                             />
 
-                            <InputError className="mt-2" message={errors.description} />
+                            <InputError className="mt-2" message={errors.email} />
+                        </div>
+
+                        <div className='mb-8'>
+                            <InputLabel value='Role' />
+                            {roles.map((role: any) => (
+                                <label className="flex items-center mb-1" key={role.id}>
+                                    <Radio
+                                        name="roles"
+                                        checked={data.roles.includes(role.name)}
+                                        value={role.name}
+                                        onChange={onRoleChange}
+                                    />
+                                    <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
+                                        {roleLabels[role.name]}
+                                    </span>
+                                </label>
+                            ))}
                         </div>
 
                         <div className="flex items-center gap-4">
