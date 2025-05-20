@@ -30,7 +30,7 @@ class UserController extends Controller
         return Inertia::render('User/Edit', [
             'user' => new AuthUserResource($user),
             'roles' => Role::all(),
-            'rolesLabels' => RolesEnum::labels()
+            'roleLabels' => RolesEnum::labels()
         ]);
     }
 

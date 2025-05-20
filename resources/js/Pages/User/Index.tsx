@@ -1,7 +1,6 @@
-import FeatureItem from '@/Components/FeatureItem';
-import { can } from '@/helpers';
+
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Feature, PageProps, PaginatedData, User } from '@/types';
+import { PageProps, User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 export default function Index({ auth, users }: PageProps<{ users: User[] }>) {
