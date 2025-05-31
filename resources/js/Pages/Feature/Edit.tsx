@@ -56,9 +56,9 @@ export default function Edit({ feature }: { feature: Feature }) {
 
                             <TextAreaInput
                                 id="description"
-                                rows={5}
+                                rows={6}
                                 className="mt-1 block w-full"
-                                value={data.name}
+                                value={data.description}
                                 onChange={(e) => setData('description', e.target.value)}
                                 required
                             />
